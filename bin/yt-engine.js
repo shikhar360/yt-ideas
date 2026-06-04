@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 const { program } = require('commander');
+const { synthesize } = require('../src/synthesis');
 
 program
   .version('1.0.0')
