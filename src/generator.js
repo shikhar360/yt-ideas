@@ -5,8 +5,9 @@ const path = require('path');
  * Generates a presentation HTML file from blueprint data.
  * @param {Object} blueprintData 
  * @param {string} outputPath
+ * @param {Array} researchData
  */
-function generatePresentation(blueprintData, outputPath) {
+function generatePresentation(blueprintData, outputPath, researchData = []) {
     const templatePath = path.join(__dirname, '../templates/presentation.html');
     if (!fs.existsSync(templatePath)) {
         throw new Error(`Template not found at ${templatePath}`);
@@ -32,7 +33,7 @@ function generatePresentation(blueprintData, outputPath) {
     // Replace Guide Steps
     const stepsHtml = (blueprintData.steps || []).map(step => `
         <div class="step-item">
-            <span class="step-metaphor">${step.metaphor}</span>
+            <span class="step-metaphor">${step.metaphor || ''}</span>
             <p>${step.description}</p>
         </div>
     `).join('');
@@ -40,6 +41,15 @@ function generatePresentation(blueprintData, outputPath) {
 
     // Replace Trap
     html = html.replace('{{TRAP_TEXT}}', blueprintData.mistake || 'Don\'t fall into the common trap of overcomplicating your initial setup.');
+
+    // Replace Research Data
+    const researchHtml = researchData.map(res => `
+        <div class="research-item">
+            <h3>${res.title}</h3>
+            <p>${res.content}</p>
+        </div>
+    `).join('') || '<p>No additional research data available yet.</p>';
+    html = html.replace('{{RESEARCH_DATA}}', researchHtml);
 
     // Ensure directory exists
     const outputDir = path.dirname(outputPath);
