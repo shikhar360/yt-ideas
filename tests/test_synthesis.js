@@ -11,7 +11,9 @@ async function runTest() {
     try {
         const blueprint = await synthesize(dummyComments);
         assert.strictEqual(blueprint.title, "The Ultimate Developer Workflow");
-        assert.strictEqual(blueprint.painPoints[0], 'I hate slow workflows');
+        // 'How to automate this?' contains '?' and is longer than other matches if any
+        assert.strictEqual(blueprint.researchTopic, 'How to automate this?');
+        assert.strictEqual(blueprint.painPoints[0], 'How to automate this?');
         console.log('✅ Synthesis test passed');
     } finally {
         if (fs.existsSync(dummyComments)) fs.unlinkSync(dummyComments);

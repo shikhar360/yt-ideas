@@ -6,14 +6,25 @@ async function synthesize(commentsFilePath) {
     const rawData = fs.readFileSync(commentsFilePath, 'utf8');
     const comments = JSON.parse(rawData);
 
-    // 2. Extract pain points (simple heuristic for now)
-    const painPoints = comments.slice(0, 3).map(c => c.text || c);
+    // 2. Select ONE "worthy" idea (heuristic: longest with '?', then just longest)
+    const texts = comments.map(c => (typeof c === 'string' ? c : c.text) || "");
+    const questions = texts.filter(t => t.includes('?'));
+    
+    let selectedIdea = "";
+    if (questions.length > 0) {
+        selectedIdea = questions.reduce((a, b) => a.length >= b.length ? a : b);
+    } else if (texts.length > 0) {
+        selectedIdea = texts.reduce((a, b) => a.length >= b.length ? a : b);
+    }
 
-    // 3. Create a dummy structured blueprint (LLM would do this in real app)
+    const researchTopic = selectedIdea || "General Developer Efficiency";
+
+    // 3. Create a structured blueprint
     const blueprintData = {
         title: "The Ultimate Developer Workflow",
+        researchTopic: researchTopic,
         benefit: "Save 10 hours a week with automation",
-        painPoints: painPoints.length > 0 ? painPoints : ["Manual repetitive tasks", "Context switching", "Lack of documentation"],
+        painPoints: [selectedIdea].filter(Boolean).length > 0 ? [selectedIdea] : ["Manual repetitive tasks", "Context switching", "Lack of documentation"],
         steps: [
             { metaphor: "The Blueprint", description: "Map out your most frequent manual steps." },
             { metaphor: "The Script", description: "Automate the mapping using simple Node.js scripts." },
@@ -35,6 +46,9 @@ date: ${new Date().toISOString()}
 ---
 
 # ${blueprintData.title}
+
+## Research Topic
+${blueprintData.researchTopic}
 
 ## Pain Points
 ${blueprintData.painPoints.map(p => `- ${p}`).join('\n')}
