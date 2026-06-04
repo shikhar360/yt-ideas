@@ -1,0 +1,14 @@
+{
+  "mode": "hybrid",
+  "name": "YouTube Idea Engine",
+  "base_modes": ["Mode E: Research", "Mode C: Project"],
+  "folders": [
+    "wiki/ideas/",
+    "wiki/production/",
+    "wiki/intel/",
+    "wiki/concepts/",
+    "wiki/entities/",
+    "wiki/sources/",
+    "wiki/questions/"
+  ]
+}
