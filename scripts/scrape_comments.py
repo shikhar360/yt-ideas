@@ -1,21 +1,20 @@
 import sys
 import json
-from scrapling import Fetcher
+import itertools
+from youtube_comment_downloader import YoutubeCommentDownloader
 
-def scrape_comments(url):
+def scrape_comments(url, limit=50):
     """
-    Fetches the given URL and extracts comments using scrapling.
-    Note: This is a placeholder implementation as YouTube comments are dynamic.
+    Fetches the given URL and extracts comments using youtube-comment-downloader.
     """
     try:
-        fetcher = Fetcher()
-        page = fetcher.get(url)
-        # Using the placeholder selector from the task description
-        # Appending ::text to extract the text content
-        comments = page.css('.comment-text-class::text').get_all()
-        return comments
+        downloader = YoutubeCommentDownloader()
+        comments_iter = downloader.get_comments_from_url(url, sort_by=0) # 0 for newest
+        # Slice the generator to avoid infinite or too many comments
+        comments = list(itertools.islice(comments_iter, limit))
+        # Extract only the text from the comment objects
+        return [comment['text'] for comment in comments]
     except Exception as e:
-        # In a real scenario, we might want to log this error
         return []
 
 if __name__ == "__main__":
