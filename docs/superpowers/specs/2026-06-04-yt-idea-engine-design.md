@@ -16,23 +16,25 @@ A comprehensive system to automate the discovery of YouTube video ideas from com
 
 ### 2.2. Processing Layer (Obsidian Wiki "The Brain")
 - **Intake Pipeline:**
-    1. Scrape comments from URL.
-    2. Perform trend research on video topics.
-    3. LLM Synthesis: Group comments into Pain Points, Curiosity Gaps, and Social Proof.
-- **Blueprint Generation:** Create a note in `wiki/ideas/` with:
-    - **Target Audience Frustrations:** (The "Agitator").
-    - **Technical Hurdles:** (The "Step-by-Step" focus).
-    - **Key Metaphors:** For AI-generated visuals.
-- **Research Loop:** Trigger `/autoresearch` on technical hurdles to fill the blueprint with verified facts and code.
+    1. **Scrape:** Extract all comments from the YouTube URL.
+    2. **Filter & Select:** LLM analyzes the entire comment pool to identify ONE "video-worthy" idea (focusing on "How/Why" questions or recurring pain points).
+    3. **Blueprint Generation:** Create a note in `wiki/ideas/` with the selected idea and a research prompt.
+    4. **Deep Research:** Automatically trigger the `autoresearch` skill on the selected topic to gather technical solutions and data.
+    5. **Final Synthesis:** Synthesize research results into the final "Retention-Engine" blueprint.
 
-### 2.3. Output Layer (Presentation SPA)
-- **Format:** Single-page HTML/CSS (Vanilla JS).
-- **Framework:** "Retention-Engine" (Hybrid PAS + WWH).
+### 2.3. Output Layer (Next.js Presentation App)
+- **Format:** Next.js (React/TypeScript) Application.
+- **Styling Guidelines (Minimalist):**
+    - **Backgrounds:** Pure Black (`#000000`) and Stone (e.g., `#292524`).
+    - **Text:** White (`#FFFFFF`).
+    - **No Gradients:** Solid contrasting colors only.
+    - **Accent Colors (Solid):** Lime, Pink, Blue, Amber, Yellow.
+- **Architecture:** 
+    - The CLI saves the final synthesized data to `presentation/data/latest.json`.
+    - The Next.js app renders a single-page interactive experience using this data.
 - **Psychological Triggers:**
-    - **Pattern Interrupts:** Alternating talent zones (Left/Right) per section.
-    - **Open Loops:** Starting with a Curiosity Gap/Problem.
-    - **Micro-Rewards:** Visual progress indicator.
-    - **Authority Building:** "Common Pitfalls" section.
+    - Retention-Engine phases (Hook, Hero, Guide, Trap) implemented as React components.
+    - Alternating Talent Zones for green-screen framing.
 
 ## 3. Component Details
 

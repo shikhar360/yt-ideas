@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+:root {
+  --background: #000000;
+  --foreground: #ffffff;
+  --stone: #292524;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+}
+
+@layer components {
+  .section {
+    @apply min-height-screen flex items-center p-12 border-b border-stone-800 relative;
+  }
+  .talent-zone {
+    @apply w-[300px] h-[450px] border-2 border-dashed border-pink-500 bg-pink-500/5 flex items-center justify-center text-pink-500 text-sm rounded-lg;
+  }
+  .accent-lime { @apply bg-lime-400 text-black; }
+  .accent-pink { @apply bg-pink-500 text-white; }
+  .accent-blue { @apply bg-blue-500 text-white; }
+  .accent-amber { @apply bg-amber-500 text-black; }
+  .accent-yellow { @apply bg-yellow-400 text-black; }
+}
+
+.min-height-screen {
+  min-height: 100vh;
+}

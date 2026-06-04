@@ -2,7 +2,6 @@
 const { program } = require('commander');
 const { execSync } = require('child_process');
 const { synthesize } = require('../src/synthesis');
-const { generatePresentation } = require('../src/generator');
 const path = require('path');
 const fs = require('fs');
 
@@ -30,15 +29,9 @@ program
       console.log('Synthesizing ideas...');
       const ideas = await synthesize(rawDataPath);
 
-      console.log('Generating presentation...');
-      const outputPath = path.join(__dirname, '../dist/presentation.html');
-      const outputDir = path.dirname(outputPath);
-      if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
-      
-      await generatePresentation(ideas, outputPath);
-
-      console.log(`Done! Presentation generated at: ${outputPath}`);
       console.log(`\nRESEARCH_REQUIRED: ${ideas.title}`);
+      console.log('Follow-up: Run autoresearch on the topic above, then run:');
+      console.log('node bin/yt-engine.js build <blueprint-file>');
     } catch (error) {
       console.error('Error during generation:', error.message);
       process.exit(1);
@@ -47,7 +40,7 @@ program
 
 program
   .command('build <blueprint-file>')
-  .description('Build final presentation from blueprint and research')
+  .description('Build final presentation data from blueprint and research')
   .action(async (blueprintFile) => {
     try {
       const blueprintPath = path.resolve(blueprintFile);
@@ -99,7 +92,7 @@ program
                       if (keywords.some(kw => fileContent.toLowerCase().includes(kw))) {
                           researchData.push({
                               title: file.replace('.md', ''),
-                              content: fileContent.slice(0, 500) + (fileContent.length > 500 ? '...' : '')
+                              content: fileContent.slice(0, 1000) // Give more content to Next.js
                           });
                       }
                   }
@@ -109,11 +102,20 @@ program
 
       console.log(`Found ${researchData.length} relevant research notes.`);
 
-      console.log('Generating final presentation...');
-      const outputPath = path.join(__dirname, '../dist/presentation.html');
-      await generatePresentation(blueprint, outputPath, researchData);
+      const finalData = {
+          ...blueprint,
+          research: researchData,
+          updatedAt: new Date().toISOString()
+      };
 
-      console.log(`Success! Final presentation: ${outputPath}`);
+      const presentationDataPath = path.join(__dirname, '../presentation/data/latest.json');
+      const dataDir = path.dirname(presentationDataPath);
+      if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+
+      fs.writeFileSync(presentationDataPath, JSON.stringify(finalData, null, 2));
+
+      console.log(`Success! Data saved for Next.js app: ${presentationDataPath}`);
+      console.log('Start the presentation app to view: cd presentation && pnpm dev');
     } catch (error) {
       console.error('Error during build:', error.message);
       process.exit(1);
