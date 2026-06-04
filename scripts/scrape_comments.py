@@ -3,7 +3,7 @@ import json
 import itertools
 from youtube_comment_downloader import YoutubeCommentDownloader
 
-def scrape_comments(url, limit=50):
+def scrape_comments(url, limit=200):
     """
     Fetches the given URL and extracts comments using youtube-comment-downloader.
     """
