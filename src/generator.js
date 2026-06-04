@@ -4,14 +4,9 @@ const path = require('path');
 /**
  * Generates a presentation HTML file from blueprint data.
  * @param {Object} blueprintData 
- * @param {string[]} blueprintData.painPoints
- * @param {string} blueprintData.title
- * @param {string} blueprintData.benefit
- * @param {Object[]} blueprintData.steps - { metaphor: string, description: string }
- * @param {string} blueprintData.mistake
- * @returns {string} Path to the generated file
+ * @param {string} outputPath
  */
-function generatePresentation(blueprintData) {
+function generatePresentation(blueprintData, outputPath) {
     const templatePath = path.join(__dirname, '../templates/presentation.html');
     if (!fs.existsSync(templatePath)) {
         throw new Error(`Template not found at ${templatePath}`);
@@ -20,8 +15,15 @@ function generatePresentation(blueprintData) {
     let html = fs.readFileSync(templatePath, 'utf8');
 
     // Replace Hook
-    html = html.replace('{{HOOK_TITLE}}', blueprintData.painPoints[0] || 'The Problem');
-    html = html.replace('{{HOOK_TEXT}}', 'Stop wasting time on solutions that don\'t work for your specific use case.');
+    const mainPainPoint = blueprintData.painPoints && blueprintData.painPoints.length > 0 
+        ? blueprintData.painPoints[0] 
+        : 'The Common Struggle';
+    html = html.replace('{{HOOK_TITLE}}', mainPainPoint);
+    
+    const hookText = blueprintData.painPoints && blueprintData.painPoints.length > 1
+        ? `Stop struggling with ${blueprintData.painPoints[1].toLowerCase()}.`
+        : 'Stop wasting time on solutions that don\'t work for your specific use case.';
+    html = html.replace('{{HOOK_TEXT}}', hookText);
 
     // Replace Hero
     html = html.replace('{{HERO_TITLE}}', blueprintData.title || 'The Solution');
@@ -39,15 +41,13 @@ function generatePresentation(blueprintData) {
     // Replace Trap
     html = html.replace('{{TRAP_TEXT}}', blueprintData.mistake || 'Don\'t fall into the common trap of overcomplicating your initial setup.');
 
-    // Ensure dist directory exists
-    const distDir = path.join(__dirname, '../dist');
-    if (!fs.existsSync(distDir)) {
-        fs.mkdirSync(distDir, { recursive: true });
+    // Ensure directory exists
+    const outputDir = path.dirname(outputPath);
+    if (!fs.existsSync(outputDir)) {
+        fs.mkdirSync(outputDir, { recursive: true });
     }
 
-    const outputPath = path.join(distDir, 'presentation.html');
     fs.writeFileSync(outputPath, html);
-
     return outputPath;
 }
 
