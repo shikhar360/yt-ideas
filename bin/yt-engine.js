@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const { program } = require('commander');
 const { execSync } = require('child_process');
-const { synthesize } = require('../src/synthesis');
+const { extractPotentialIdeas, generateFinalBlueprint } = require('../src/synthesis');
 const path = require('path');
 const fs = require('fs');
 
@@ -12,28 +12,46 @@ program
 
 program
   .command('generate <url>')
-  .description('Generate video ideas and presentation from a YouTube URL')
+  .description('Scrape comments and extract potential video ideas')
   .action(async (url) => {
     try {
       console.log(`Scraping comments for: ${url}...`);
       const scraperPath = path.join(__dirname, '../scripts/scrape_comments.py');
       const rawDataPath = path.join(__dirname, '../yt-ideas/.raw/comments.json');
-      
-      // Ensure .raw directory exists
+
       const rawDir = path.dirname(rawDataPath);
       if (!fs.existsSync(rawDir)) fs.mkdirSync(rawDir, { recursive: true });
 
-      // Run Python scraper and capture stdout to file
-      execSync(`python3 "${scraperPath}" "${url}" > "${rawDataPath}"`);
+      execSync(`python3 "${scraperPath}" ${JSON.stringify(url)} > "${rawDataPath}"`);
 
-      console.log('Synthesizing ideas...');
-      const ideas = await synthesize(rawDataPath);
+      console.log('Extracting video-worthy ideas...');
+      const ideasFilePath = extractPotentialIdeas(rawDataPath);
 
-      console.log(`\nRESEARCH_REQUIRED: ${ideas.title}`);
-      console.log('Follow-up: Run autoresearch on the topic above, then run:');
-      console.log('node bin/yt-engine.js build <blueprint-file>');
+      console.log(`\nPotential video ideas saved to: ${ideasFilePath}`);
+      console.log('\nNext Steps:');
+      console.log('1. Open the Markdown file above and review the ideas.');
+      console.log('2. Choose one and run: node bin/yt-engine.js create-blueprint "Your Chosen Idea Text"');
+
     } catch (error) {
       console.error('Error during generation:', error.message);
+      process.exit(1);
+    }
+  });
+
+program
+  .command('create-blueprint <chosenIdea>')
+  .description('Generate final blueprint for the chosen idea')
+  .action(async (chosenIdea) => {
+    try {
+      console.log('Generating final blueprint for chosen idea...');
+      const { blueprintData, wikiPath } = await generateFinalBlueprint(chosenIdea);
+
+      console.log(`\nBlueprint created at: ${wikiPath}`);
+      console.log(`\nRESEARCH_REQUIRED: ${blueprintData.researchTopic}`);
+      console.log('Follow-up: Run autoresearch on the topic above, then run:');
+      console.log(`node bin/yt-engine.js build "${wikiPath}"`);
+    } catch (error) {
+      console.error('Error creating blueprint:', error.message);
       process.exit(1);
     }
   });
