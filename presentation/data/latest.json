@@ -1,0 +1,26 @@
+{
+  "title": "Zero to Client: Automating Lead Gen with Claude Co...",
+  "painPoints": [
+    "Zero to Client: Automating Lead Gen with Claude Code"
+  ],
+  "benefit": "Research needed to determine specific benefits",
+  "steps": [
+    {
+      "description": "Step 1: Deep dive into the core problem"
+    },
+    {
+      "description": "Step 2: Research existing solutions"
+    },
+    {
+      "description": "Step 3: Synthesize ultimate workflow"
+    }
+  ],
+  "mistake": "TBD via research",
+  "research": [
+    {
+      "title": "productivity-frameworks-for-software-engineers",
+      "content": "---\ntype: source\nsource_type: research_summary\nauthor: unknown\ndate_published: 2026-06-04\nurl: \"https://vertexaisearch.cloud.google.com/grounding-api-redirect/...\"\nconfidence: high\nkey_claims:\n  - Productivity for engineers is about managing cognitive load and attention residue.\n  - Deep Work blocks should be aligned with 90-minute ultradian rhythms.\n  - The Maker's Schedule requires long, uninterrupted blocks of time.\n  - TDD provides the immediate feedback loop necessary for flow state.\n---\n\n# Source: Productivity Frameworks for Software Engineers\n\n## Summary\nA compilation of psychological and organizational frameworks (Deep Work, Flow State, Maker's Schedule) specifically adapted for software engineering.\n\n## Key Findings\n- **90-Minute Focus**: The minimum block for complex mental model loading.\n- **Attention Residue**: The cognitive cost of switching tasks or checking Slack, which lingers and reduces IQ.\n- **Shutdown Ritual**: A formal end to the day to capture \"open loops\" and pro"
+    }
+  ],
+  "updatedAt": "2026-06-05T06:48:04.288Z"
+}
